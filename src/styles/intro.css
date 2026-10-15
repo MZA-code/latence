@@ -1,0 +1,177 @@
+/* Introduction d'ouverture : un calque noir devant le terminal éteint. Le dialogue avec les archives
+   s'écrit en Martian Mono, couleur du phosphore, avec un halo et des lignes de balayage. */
+body.intro-ouverte { overflow: hidden; }
+.intro {
+  --lueur: rgb(var(--signal-rgb));
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: safe center;     /* un dialogue plus haut que la fenêtre garde son début visible */
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: radial-gradient(120% 90% at 50% 45%, #0b0d0c 0%, #030404 70%, #000 100%);
+  color: var(--lueur);
+  transition: opacity .7s ease;
+}
+/* Les lignes de balayage, par-dessus tout le calque */
+.intro::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / .28) 2px 3px);
+}
+.intro.is-parti { opacity: 0; pointer-events: none; }
+
+/* ---------- Le seuil ---------- */
+.intro-seuil {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.intro-seuil > .intro-curseur { margin-bottom: 28px; height: 1.4em; }
+.intro-note { margin: -4px 0 6px; font: 12px var(--mono); color: var(--ink-3); }
+
+/* ---------- Le dialogue ---------- */
+.intro-ecran {
+  width: min(100%, 46rem);
+  display: grid;
+  gap: 36px;
+}
+.intro-console {
+  display: grid;
+  gap: .55em;
+  font: 500 clamp(11.5px, 1.6vw, 15px)/1.55 var(--mono);
+  letter-spacing: .02em;
+  text-shadow: 0 0 6px rgb(var(--signal-rgb) / .55), 0 0 18px rgb(var(--signal-rgb) / .18);
+}
+.intro-console p { margin: 0; }
+.intro-entete { opacity: .7; }
+.intro-entete + .intro-question,
+.intro-reponse + .intro-question,
+.intro-ligne + .intro-question,
+.intro-compteur + .intro-question { margin-top: 1.2em; }
+.intro-question { color: #fff; text-shadow: 0 0 8px rgb(var(--signal-rgb) / .7); }
+.intro-invite { opacity: .6; }
+.intro-question + .intro-reponse, .intro-question + .intro-ligne, .intro-question + .intro-compteur { margin-top: .5em; }
+.intro-reponse { display: grid; grid-template-columns: 6ch 1fr; }
+.intro-date { color: #fff; }
+.intro-compteur {
+  margin-top: .3em;
+  font-size: 1.6em;
+  letter-spacing: .08em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  text-shadow: 0 0 10px rgb(var(--signal-rgb) / .8), 0 0 28px rgb(var(--signal-rgb) / .3);
+}
+
+.intro-curseur {
+  display: inline-block;
+  width: .62em;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -.15em;
+  background: var(--lueur);
+  box-shadow: 0 0 8px rgb(var(--signal-rgb) / .6);
+  animation: intro-clignote 1.06s steps(1) infinite;
+}
+@keyframes intro-clignote { 50% { opacity: 0; } }
+
+/* ---------- La Ligne : Terre, neuf relais, Mars ---------- */
+.intro-ligne {
+  display: flex;
+  align-items: center;
+  margin: 1em 0 1.6em;
+  font-size: .85em;
+}
+.intro-astre { padding-inline: .7em; color: #fff; }
+.intro-point {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--lueur);
+  box-shadow: 0 0 10px rgb(var(--signal-rgb) / .7);
+}
+.intro-seg {
+  flex: 1;
+  height: 2px;
+  background: rgb(var(--signal-rgb) / .2);
+  transition: background .4s ease;
+}
+.intro-relais {
+  position: relative;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgb(var(--signal-rgb) / .3);
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+/* Le nom du relais, sous son carré */
+.intro-relais::after {
+  content: attr(data-nom);
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .75em;
+  opacity: .45;
+}
+.intro-relais.is-on { background: var(--lueur); border-color: var(--lueur); box-shadow: 0 0 8px rgb(var(--signal-rgb) / .7); }
+.intro-seg.is-on { background: rgb(var(--signal-rgb) / .75); }
+.intro-relais.is-alerte { animation: intro-alerte .5s steps(1) infinite; }
+@keyframes intro-alerte { 50% { background: transparent; box-shadow: none; } }
+.intro-relais.is-muet { background: transparent; border-color: rgb(var(--signal-rgb) / .5); box-shadow: none; }
+.intro-relais.is-muet::after { opacity: 1; color: #fff; }
+/* La Ligne coupée : plus rien ne passe de part et d'autre du relais muet */
+.intro-seg.is-coupe { background: rgb(var(--signal-rgb) / .12); }
+@media (max-width: 599px) {
+  .intro-astre { padding-inline: .4em; }
+  .intro-relais { width: 8px; height: 8px; }
+  .intro-relais::after { font-size: .65em; }
+}
+
+/* ---------- Les boutons ---------- */
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+  min-height: 48px;
+}
+.intro-bouton {
+  padding: 12px 22px;
+  border: 1px solid rgb(var(--signal-rgb) / .6);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--lueur);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgb(var(--signal-rgb) / .5);
+  cursor: pointer;
+  animation: intro-apparait 1s ease both;
+}
+.intro-bouton:hover { background: rgb(var(--signal-rgb) / .08); }
+.intro-bouton:focus-visible { outline: 2px solid var(--lueur); outline-offset: 3px; }
+.intro-lien {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font: 13px var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.intro-lien:hover { color: var(--ink-2); }
+.intro-lien:focus-visible { outline: 2px solid var(--ink-2); outline-offset: 2px; }
+@keyframes intro-apparait { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { transition: none; }
+  .intro-bouton, .intro-curseur, .intro-relais.is-alerte { animation: none; }
+}

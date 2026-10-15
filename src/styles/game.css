@@ -1,0 +1,193 @@
+/* Page du jeu (index.html) : le terminal seul, plein cadre, et son clavier. */
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
+@import './stage.css';
+@import './keys.css';
+@import './panel.css';
+@import './intro.css';
+
+body { margin: 0; }
+.game {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 3vw, 32px);
+  padding-block: 16px 24px;
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+.game-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+.game-name {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(15px, 2vw, 19px);
+  letter-spacing: .14em;
+  color: var(--ink);
+}
+.game-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool {
+  appearance: none;
+  border: 1px solid var(--rule-2);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 600 11px/1 var(--mono);
+  letter-spacing: .04em;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.tool:hover, .tool[aria-expanded="true"] { color: var(--ink); border-color: var(--ink-3); }
+.tool:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+/* L'écran au milieu, au plus 74vh de haut ; les écussons dans les marges, s'il y a la place (src/ui/decor.js) */
+.game .stage-wrap {
+  grid-template-columns: minmax(0, 1fr) minmax(0, calc(74vh * var(--ar, 1.3333))) minmax(0, 1fr);
+  background: none;
+  border: 0;
+  padding: 0;
+  container-type: inline-size;
+}
+.game .stage { grid-column: 2; grid-row: 1; width: 100%; }
+/* Sans photo, le bloc de l'écran prend toute la largeur des touches */
+.game .stage:not(.avec-photo) {
+  grid-column: 1 / -1;
+  aspect-ratio: auto;
+  height: min(calc(100cqw / 1.3333), 76vh);
+  background: radial-gradient(120% 95% at 50% 38%, #1e201c 0%, #141512 55%, #0b0c0a 100%);
+}
+/* Le verre s'élargit avec le bloc ; seul le contenu de l'écran reste en 4:3, centré (src/ui/placement.js) */
+.game .stage:not(.avec-photo) .tube { background: none; }
+.cote {
+  grid-row: 1;
+  justify-self: stretch;          /* un conteneur de requête n'a pas de largeur propre : il prend sa colonne */
+  container-type: inline-size;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.cote--gauche { grid-column: 1; }
+.cote--droite { grid-column: 3; }
+.ecusson { display: block; max-width: 84%; height: auto; filter: brightness(.8) saturate(.9); }
+@container (max-width: 119px) { .ecusson { display: none; } }
+
+/* Grand écran : la photo du terminal remplace le tube dessiné, une fois chargée */
+.game .stage:not(.avec-photo) .photo { display: none; }
+.game .stage.avec-photo .tube, .game .stage.avec-photo .glare { display: none; }
+
+/* Téléphone : pas de photo, touches sur trois rangées (même seuil que WIDE dans src/ui/decor.js) */
+@media (max-width: 599px) {
+  .game .keys { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* L'écran en pleine largeur, bord à bord, sans boîtier ni verre dessiné (src/main.js : PLEIN_CORNERS) */
+  .game { align-content: start; }               /* tout en haut de la fenêtre, pas centré */
+  .game .stage-wrap { margin-inline: calc(-1 * clamp(16px, 3vw, 32px)); }
+  .game .stage:not(.avec-photo) { background: #000; }
+  .game .stage .tube::before, .game .stage .glare { display: none; }
+}
+
+/* Le volet des réglages de l'écran : caché à droite, il glisse par-dessus la page sans masquer
+   l'écran sur un grand écran, pour régler le tube en le regardant (src/ui/reglages.js) */
+.volet {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 20;
+  width: min(340px, 100vw);
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: var(--bench);
+  border-left: 1px solid var(--rule-2);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, .55);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform .25s ease, visibility 0s linear .25s;
+}
+.volet.is-open { transform: none; visibility: visible; transition: transform .25s ease; }
+.volet:focus { outline: none; }
+.volet-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.volet-titre {
+  margin: 0;
+  font: 600 10.5px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--ink-2);
+}
+.volet .block { border-top: 0; }
+.volet--large { width: min(660px, 100vw); }
+.rapport {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  background: var(--room);
+  font: 11.5px/1.55 var(--mono);
+  color: var(--ink);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+.rapport:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .volet, .volet.is-open { transition: none; }
+}
+
+/* Les touches sous l'écran, sur deux rangées basses : cinq, puis quatre avec Envoi en double largeur.
+   Le raccourci se met à côté du nom plutôt que dessous. */
+@media (min-width: 600px) {
+  .game .keys { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .game .key--cnx { grid-column: auto; }
+  .game .key--envoi { grid-column: span 2; }
+  .game .key:has(.key-nom) {
+    grid-auto-flow: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding-block: 6px 5px;
+  }
+  .game .key--cnx .key-nom { font-size: 9.5px; line-height: 1.05; }
+}
+
+/* Les touches en relief doux (neumorphisme), avec le code couleur du clavier d'époque : les touches de
+   fonction marron, Connexion/Fin noire, Envoi verte, toutes en texte blanc. Posées sur un panneau mat,
+   elles en sortent, éclairées en haut à gauche, et s'y enfoncent quand on appuie. */
+.game .keys {
+  padding: 12px;
+  border-radius: 14px;
+  background: #1c1d19;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .04), 0 1px 0 rgb(0 0 0 / .6);
+}
+.game .key {
+  --haut: #6a4630;           /* marron : les touches de fonction */
+  --bas: #4e321f;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(145deg, var(--haut), var(--bas));
+  color: #f4efe4;
+  box-shadow: -3px -3px 7px rgb(255 255 255 / .06), 4px 4px 9px rgb(0 0 0 / .6),
+    inset 1px 1px 0 rgb(255 255 255 / .12);
+  transition: box-shadow .12s, filter .12s;
+}
+.game .key--cnx { --haut: #2a2a27; --bas: #121210; color: #f4efe4; }   /* noire */
+.game .key--envoi { --haut: #3f8a4c; --bas: #2a6334; }                  /* verte */
+.game .key:hover, .game .key--cnx:hover { background: linear-gradient(145deg, var(--haut), var(--bas)); filter: brightness(1.1); }
+.game .key:active, .game .key.is-down {
+  transform: none;
+  background: linear-gradient(145deg, var(--bas), var(--bas));
+  box-shadow: inset 3px 3px 7px rgb(0 0 0 / .6), inset -2px -2px 5px rgb(255 255 255 / .08);
+}
+.game .key-raccourci { opacity: .65; }

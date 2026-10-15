@@ -1,0 +1,25 @@
+/* Jetons : couleurs de l'établi, couleur du phosphore (--signal), familles de caractères. */
+:root {
+  color-scheme: dark;
+  --room: #0c0d0b;
+  --bench: #131411;
+  --bench-2: #1a1b17;
+  --rule: #2d2f28;
+  --rule-2: #3d4037;
+  --ink: #e8e6db;
+  --ink-2: #a7a89b;
+  --ink-3: #75766c;
+  --key-top: #e6dfcc;
+  --key-bot: #cec6b1;
+  --key-ink: #1d1c18;
+  --key-edge: #8f8874;
+  --key-shadow: #6c6655;
+  --wait: #d8b25c;
+  --signal: #d9e6ff;
+  --signal-rgb: 217 230 255;
+  --display: "Michroma", "Eurostile", "Microgramma", "Arial Black", sans-serif;
+  --text: "Archivo Variable", "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+body[data-phos="vert"] { --signal: #7cf5a5; --signal-rgb: 124 245 165; }
+[hidden] { display: none !important; }

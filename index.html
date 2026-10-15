@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LATENCE</title>
+  <meta name="description" content="Un escape game d'environ 1 h 30, joué entièrement sur un terminal vidéotex recréé dans le navigateur.">
+  <meta name="theme-color" content="#0c0d0b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <div class="game">
+    <header class="game-top">
+      <p class="game-name">LATENCE</p>
+      <div class="game-tools">
+        <button type="button" class="tool" id="tSound" aria-pressed="true">Son : oui</button>
+        <button type="button" class="tool" id="tReglages" aria-controls="volet" aria-expanded="false">Réglages</button>
+      </div>
+    </header>
+
+    <section class="rig" aria-label="Le terminal">
+      <div class="stage-wrap" id="stageWrap">
+        <div class="stage" id="stage">
+          <div class="tube" id="tube"></div>
+          <div class="screen" id="screen">
+            <div class="crt-wrap" id="crtWrap">
+              <canvas id="crt" role="img" aria-label="Écran du terminal"></canvas>
+            </div>
+          </div>
+          <div class="glare"></div>
+          <input class="sink" id="sink" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Saisie au clavier du terminal" tabindex="-1">
+        </div>
+      </div>
+
+      <div class="keys" role="group" aria-label="Touches de fonction du terminal">
+        <button type="button" class="key" data-key="sommaire" aria-label="Sommaire (Début)" aria-keyshortcuts="Home"><span class="key-nom">Sommaire</span><kbd class="key-raccourci" aria-hidden="true">Début</kbd></button>
+        <button type="button" class="key" data-key="annulation" aria-label="Annulation (Échap)" aria-keyshortcuts="Escape"><span class="key-nom">Annulation</span><kbd class="key-raccourci" aria-hidden="true">Échap</kbd></button>
+        <button type="button" class="key" data-key="retour" aria-label="Retour (flèche gauche)" aria-keyshortcuts="ArrowLeft"><span class="key-nom">Retour</span><kbd class="key-raccourci" aria-hidden="true">←</kbd></button>
+        <button type="button" class="key" data-key="repetition" aria-label="Répétition (F2)" aria-keyshortcuts="F2"><span class="key-nom">Répétition</span><kbd class="key-raccourci" aria-hidden="true">F2</kbd></button>
+        <button type="button" class="key" data-key="guide" aria-label="Guide (F1)" aria-keyshortcuts="F1"><span class="key-nom">Guide</span><kbd class="key-raccourci" aria-hidden="true">F1</kbd></button>
+        <button type="button" class="key" data-key="correction" aria-label="Correction (retour arrière)" aria-keyshortcuts="Backspace"><span class="key-nom">Correction</span><kbd class="key-raccourci" aria-hidden="true">⌫</kbd></button>
+        <button type="button" class="key" data-key="suite" aria-label="Suite (flèche droite)" aria-keyshortcuts="ArrowRight"><span class="key-nom">Suite</span><kbd class="key-raccourci" aria-hidden="true">→</kbd></button>
+        <button type="button" class="key key--envoi" data-key="envoi" aria-label="Envoi (Entrée)" aria-keyshortcuts="Enter"><span class="key-nom">Envoi</span><kbd class="key-raccourci" aria-hidden="true">Entrée</kbd></button>
+        <button type="button" class="key key--cnx" data-key="connexion" aria-label="Connexion/Fin (Fin)" aria-keyshortcuts="End"><span class="key-nom">Connexion<br>Fin</span><kbd class="key-raccourci" aria-hidden="true">Fin</kbd></button>
+      </div>
+    </section>
+  </div>
+
+  <div class="intro" id="intro" hidden></div>
+
+  <aside class="volet" id="volet" aria-labelledby="voletTitre" tabindex="-1" data-garde-touches>
+    <div class="volet-tete">
+      <h2 class="volet-titre" id="voletTitre">Réglages de l'écran</h2>
+      <button type="button" class="tool" data-volet="fermer">Fermer</button>
+    </div>
+    <section class="block">
+      <div class="field">
+        <span class="label" id="lblPhos">Phosphore</span>
+        <div class="seg" role="radiogroup" aria-labelledby="lblPhos">
+          <button type="button" role="radio" data-phos="blanc">Blanc <small>P4</small></button>
+          <button type="button" role="radio" data-phos="vert">Vert <small>P1</small></button>
+        </div>
+      </div>
+      <div class="sliders">
+        <label class="range-row" for="rCurv"><span>Courbure du verre</span><output data-sortie="curv" for="rCurv"></output></label>
+        <input type="range" id="rCurv" data-reglage="curv">
+        <label class="range-row" for="rScan"><span>Lignes de balayage</span><output data-sortie="scan" for="rScan"></output></label>
+        <input type="range" id="rScan" data-reglage="scan">
+        <label class="range-row" for="rBloom"><span>Halo du phosphore</span><output data-sortie="bloom" for="rBloom"></output></label>
+        <input type="range" id="rBloom" data-reglage="bloom">
+        <label class="range-row" for="rPersist"><span>Rémanence</span><output data-sortie="persist" for="rPersist"></output></label>
+        <input type="range" id="rPersist" data-reglage="persist">
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn--quiet" data-volet="origine">Valeurs d'origine</button>
+      </div>
+    </section>
+  </aside>
+</body>
+</html>

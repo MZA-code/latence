@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Banc d'essai du terminal</title>
+  <meta name="description" content="Écran de terminal vidéotex recréé pixel par pixel en WebGL : 40 × 25 à 1200 bauds, phosphore blanc ou vert, à incruster sur une vraie photo.">
+  <meta name="theme-color" content="#0c0d0b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/src/bench-main.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <h1 class="name">Banc d'essai</h1>
+        <p class="sub">Réglage du tube et calage de la photo du terminal. Le scénario du jeu tourne dans l'écran, comme sur la page de jeu.</p>
+      </div>
+      <dl class="spec">
+        <div><dt>Norme</dt><dd>Vidéotex STUM 1B</dd></div>
+        <div><dt>Grille</dt><dd>40 × 25</dd></div>
+        <div><dt>Matrice</dt><dd>8 × 10 px</dd></div>
+        <div><dt>Trame</dt><dd>320 × 250 px</dd></div>
+        <div><dt>Mosaïque</dt><dd>2 × 3</dd></div>
+      </dl>
+    </header>
+
+    <main class="bench">
+      <section class="rig" aria-label="Écran et clavier">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img class="photo" id="photo" alt="Photo du terminal servant de fond" hidden>
+            <div class="tube" id="tube"></div>
+            <div class="screen" id="screen">
+              <div class="crt-wrap" id="crtWrap">
+                <canvas id="crt" role="img" aria-label="Écran du terminal"></canvas>
+              </div>
+            </div>
+            <div class="glare" id="glare"></div>
+            <div class="calib" id="calib" hidden>
+              <svg aria-hidden="true"><polygon id="quad" points=""></polygon></svg>
+              <button type="button" class="handle" data-k="0" aria-label="Coin haut gauche de l'écran"><span>HG</span></button>
+              <button type="button" class="handle" data-k="1" aria-label="Coin haut droit de l'écran"><span>HD</span></button>
+              <button type="button" class="handle" data-k="2" aria-label="Coin bas droit de l'écran"><span>BD</span></button>
+              <button type="button" class="handle" data-k="3" aria-label="Coin bas gauche de l'écran"><span>BG</span></button>
+            </div>
+            <div class="loupe" id="loupe" hidden></div>
+            <div class="drop" id="drop" hidden>Dépose une photo de terminal<br>ou une page Vidéotex (.vdt)</div>
+            <p class="stage-note" id="stageNote">Cadre neutre · dépose une photo de terminal pour l'incrustation</p>
+            <input class="sink" id="sink" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Saisie au clavier du terminal" tabindex="-1">
+          </div>
+        </div>
+
+        <div class="keys" role="group" aria-label="Touches de fonction du terminal">
+          <button type="button" class="key" data-key="sommaire">Sommaire</button>
+          <button type="button" class="key" data-key="annulation">Annulation</button>
+          <button type="button" class="key" data-key="retour">Retour</button>
+          <button type="button" class="key" data-key="repetition">Répétition</button>
+          <button type="button" class="key" data-key="guide">Guide</button>
+          <button type="button" class="key" data-key="correction">Correction</button>
+          <button type="button" class="key" data-key="suite">Suite</button>
+          <button type="button" class="key key--envoi" data-key="envoi">Envoi</button>
+          <button type="button" class="key key--cnx" data-key="connexion">Connexion<br>Fin</button>
+        </div>
+
+        <div class="status">
+          <div class="readouts" aria-live="off">
+            <span class="ro"><span class="led" id="led"></span><span class="v" id="roState">Hors connexion</span></span>
+            <span class="ro"><span class="k">Heure du jeu</span><span class="v" id="roTime">--:--</span></span>
+            <span class="ro"><span class="k">Débit</span><span class="v" id="roBaud">1200 bit/s</span></span>
+            <span class="ro"><span class="k">Reçu</span><span class="v" id="roRx">0 o</span></span>
+            <span class="ro"><span class="k">En file</span><span class="v" id="roQueue">0 o</span></span>
+          </div>
+          <div class="hintbar">
+            <p class="hint" id="hint" aria-live="polite">Le scénario tourne dans l'écran.</p>
+            <button type="button" class="btn" id="bPower">Éteindre</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sheet" aria-label="Réglages">
+        <section class="block">
+          <h2 class="block-title">Tube <em id="tubeInfo">phosphore P4</em></h2>
+          <div class="field">
+            <span class="label" id="lblPhos">Phosphore</span>
+            <div class="seg" role="radiogroup" aria-labelledby="lblPhos">
+              <button type="button" role="radio" id="phosBlanc" data-phos="blanc">Blanc <small>P4</small></button>
+              <button type="button" role="radio" id="phosVert" data-phos="vert">Vert <small>P1</small></button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label">Les 8 couleurs Vidéotex deviennent 8 gris</span>
+            <div class="swatches" id="swatches"></div>
+          </div>
+          <div class="sliders">
+            <label class="range-row" for="rCurv"><span>Courbure du verre</span><output id="oCurv" for="rCurv"></output></label>
+            <input type="range" id="rCurv" min="0" max="0.3" step="0.01">
+            <label class="range-row" for="rScan"><span>Lignes de balayage</span><output id="oScan" for="rScan"></output></label>
+            <input type="range" id="rScan" min="0" max="1" step="0.01">
+            <label class="range-row" for="rBloom"><span>Halo du phosphore</span><output id="oBloom" for="rBloom"></output></label>
+            <input type="range" id="rBloom" min="0" max="1" step="0.01">
+            <label class="range-row" for="rPersist"><span>Rémanence</span><output id="oPersist" for="rPersist"></output></label>
+            <input type="range" id="rPersist" min="0" max="1" step="0.01">
+          </div>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title">Ligne <em>modem V.23</em></h2>
+          <div class="field">
+            <span class="label" id="lblBaud">Débit d'affichage</span>
+            <div class="seg" role="radiogroup" aria-labelledby="lblBaud">
+              <button type="button" role="radio" id="baud1200" data-baud="1200">1200 <small>bit/s</small></button>
+              <button type="button" role="radio" id="baud4800" data-baud="4800">4800 <small>bit/s</small></button>
+              <button type="button" role="radio" id="baudInst" data-baud="0">Instantané</button>
+            </div>
+          </div>
+          <label class="toggle" for="cSound"><span>Sifflement du modem à la connexion</span><input type="checkbox" id="cSound"></label>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title">Photo <em id="photoInfo">aucune</em></h2>
+          <p class="note">Une photo de face, écran éteint, dans une pièce sombre : le phosphore s'incruste sur le verre noir sans le masquer.</p>
+          <div class="row">
+            <button type="button" class="btn" id="bPhoto">Choisir une photo</button>
+            <button type="button" class="btn" id="bCalib" aria-pressed="false">Caler les coins</button>
+            <input type="file" id="fPhoto" class="vh" accept="image/*" tabindex="-1">
+          </div>
+          <div class="field">
+            <span class="label" id="lblBlend">Incrustation</span>
+            <div class="seg" role="radiogroup" aria-labelledby="lblBlend">
+              <button type="button" role="radio" id="blendScreen" data-blend="screen">Lumineuse</button>
+              <button type="button" role="radio" id="blendOpaque" data-blend="normal">Opaque</button>
+            </div>
+          </div>
+          <div class="coords" id="coords" aria-label="Position des coins en pourcentage de la photo"></div>
+          <div class="row">
+            <button type="button" class="btn" id="bCopy">Copier le calage</button>
+            <button type="button" class="btn btn--quiet" id="bRecenter">Recentrer</button>
+            <button type="button" class="btn btn--quiet" id="bRemove" disabled>Retirer la photo</button>
+          </div>
+          <p class="toast" id="toast" role="status"></p>
+          <textarea id="tExport" readonly hidden aria-label="Calage au format JSON"></textarea>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title">Pages <em>format .vdt</em></h2>
+          <p class="note">Le décodeur lit le Vidéotex brut : exports de MiEdit, pages d'archives, flux capturés. Dépose le fichier sur l'écran ou choisis-le ici.</p>
+          <div class="row">
+            <button type="button" class="btn" id="bVdt">Lire un fichier .vdt</button>
+            <input type="file" id="fVdt" class="vh" accept=".vdt,.VDT,.bin,application/octet-stream" tabindex="-1">
+          </div>
+        </section>
+
+        <section class="block">
+          <h2 class="block-title">Clavier <em>raccourcis</em></h2>
+          <dl class="keymap">
+            <dt><kbd>Entrée</kbd></dt><dd>Envoi</dd>
+            <dt><kbd>Retour arrière</kbd></dt><dd>Correction</dd>
+            <dt><kbd>Échap</kbd></dt><dd>Annulation</dd>
+            <dt><kbd>Début</kbd></dt><dd>Sommaire</dd>
+            <dt><kbd>Fin</kbd></dt><dd>Connexion / Fin</dd>
+            <dt><kbd>Page suiv.</kbd> <kbd>→</kbd></dt><dd>Suite</dd>
+            <dt><kbd>Page préc.</kbd> <kbd>←</kbd></dt><dd>Retour</dd>
+            <dt><kbd>F1</kbd> <kbd>F2</kbd></dt><dd>Guide, Répétition</dd>
+          </dl>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <p>Aucune image dans l'écran : chaque image est recalculée à partir d'une mémoire de page de 40 × 25 caractères, puis passée dans un shader qui simule le faisceau, le halo et la courbure du tube.</p>
+      <p>Police 8 × 10, semi-graphiques et règles d'attributs redessinés d'après la <a href="https://jbellue.github.io/stum1b/" target="_blank" rel="noopener">STUM 1B</a>.</p>
+    </footer>
+  </div>
+</body>
+</html>

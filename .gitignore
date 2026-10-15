@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.idea/
+.playwright-mcp/
+.remember/
+*.log
+.DS_Store
