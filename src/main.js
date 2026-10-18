@@ -58,7 +58,7 @@ bindVolet({ bouton: $('tReglages'), volet: $('volet'), reglages, origine, onChan
 // ?essai ajoute le rapport d'essai de la partie (docs/latence/essais.md).
 const params = new URLSearchParams(location.search);
 if (params.has('instantane')) minitel.line.baud = 0;
-if (params.has('debug')) window.jeu = game;
+if (params.has('debug') && import.meta.env.DEV) window.jeu = game;   // jamais en ligne : la console ne révèle rien
 if (params.has('essai') && scenario.rapport) monterEssai({ outils: document.querySelector('.game-tools'), rapport: () => scenario.rapport(game) });
 
 // La partie se sauvegarde aussi quand on quitte la page, pas seulement toutes les 5 secondes
@@ -69,6 +69,7 @@ minitel.start();
 
 // Le terminal s'allume sur l'écran titre ; le clavier ne part au jeu qu'à partir de là
 function allumer() {
+  $('jeu').inert = false;
   audio.unlock();
   minitel.powerOn();
   game.boot();
@@ -79,6 +80,7 @@ function allumer() {
 if (scenario.intro && !params.has('instantane')) {
   $('crtWrap').style.opacity = 0;
   minitel.powered = false;
+  $('jeu').inert = true;                  // derrière le calque de l'introduction, rien n'est atteignable
   monterIntro({
     calque: $('intro'), intro: scenario.intro, store, reduced, audio, onAllumer: allumer,
     choisirSon: oui => { son = oui; syncPrefs(); },

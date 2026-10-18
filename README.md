@@ -60,16 +60,24 @@ Puis ouvrir <http://localhost:5173>.
 |---|---|
 | `npm run dev` | Serveur de développement |
 | `npm test` | Tests du décodeur vidéotex, du moteur de jeu et des énigmes (Vitest) |
-| `npm run build` | Build optimisé dans `dist/`, en chemins relatifs : il se dépose sur n'importe quel hébergement statique |
+| `npm run build` | Build de production dans `dist/` : le jeu, les mentions légales et la page 404, prêts pour la racine de <https://latence-game.com> |
 | `npm run preview` | Sert le build en local |
 | `npm run mosaique -- image.png --colonnes 12 --rangees 5` | Convertit une silhouette noir et blanc (PNG) en dessin en pavés |
 | `npm run images` | Prépare les images du site à partir de `sources/images/` (demande ffmpeg) |
 
-Deux pages :
+Les pages :
 - `index.html` : le jeu.
-- `banc.html` : le banc d'essai, pour poser l'écran sur une photo de terminal (calage des 4 coins par homographie), régler le tube et lire des fichiers `.vdt`.
+- `mentions-legales.html` : mentions légales, données personnelles et déclaration d'accessibilité.
+- `404.html` : la page introuvable.
+- `banc.html` : le banc d'essai, en développement seulement (il n'est pas dans le build), pour poser l'écran sur une photo de terminal (calage des 4 coins par homographie), régler le tube et lire des fichiers `.vdt`.
 
-Options d'URL pour le développement : `?instantane` affiche les pages sans attendre la ligne, `?debug` expose le jeu dans la console (`window.jeu`), `?essai` ajoute le rapport de partie pour les séances avec des joueurs.
+Options d'URL pour le développement : `?instantane` affiche les pages sans attendre la ligne, `?debug` expose le jeu dans la console (`window.jeu`, en développement seulement), `?essai` ajoute le rapport de partie pour les séances avec des joueurs.
+
+## Mise en ligne
+
+Le site est servi par Apache chez o2switch. Déposer le **contenu** de `dist/` à la racine du domaine, fichiers cachés compris (`.htaccess`, `.well-known/`).
+
+`public/.htaccess` force `https://latence-game.com` sans www, pose les en-têtes de sécurité (CSP stricte : tout vient du site), règle le cache (les fichiers de `assets/` sont immuables) et refuse les robots d'IA et les aspirateurs, que `public/robots.txt` écarte aussi. Les moteurs de recherche et les aperçus de liens restent admis. Pour ajouter un robot, le nommer aux deux endroits.
 
 ## Documentation
 

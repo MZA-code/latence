@@ -3,24 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>LATENCE</title>
-  <meta name="description" content="Un escape game d'environ 1 h 30, joué entièrement sur un terminal vidéotex recréé dans le navigateur.">
+  <title>LATENCE · escape game sur terminal vidéotex</title>
+  <meta name="description" content="17 septembre 2097 : un relais de la Ligne Terre-Mars ne répond plus. Un escape game d'environ 1 h 30, joué sur un terminal vidéotex recréé dans le navigateur. Prévoyez du papier et un crayon.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://latence-game.com/">
   <meta name="theme-color" content="#0c0d0b">
   <meta name="color-scheme" content="dark">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LATENCE">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:url" content="https://latence-game.com/">
+  <meta property="og:title" content="LATENCE · escape game sur terminal vidéotex">
+  <meta property="og:description" content="Le relais L7 ne répond plus depuis 19 jours. Vous avez jusqu'à 15:45 pour le réparer. Un escape game d'environ 1 h 30, dans le navigateur.">
+  <meta property="og:image" content="https://latence-game.com/partage.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="L'écran titre de LATENCE sur un tube cathodique : la Ligne Terre-Mars dessinée en pavés.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "LATENCE",
+    "url": "https://latence-game.com/",
+    "image": "https://latence-game.com/partage.jpg",
+    "description": "Un escape game d'environ 1 h 30, joué entièrement sur un terminal vidéotex recréé dans le navigateur.",
+    "inLanguage": "fr",
+    "genre": ["Escape game", "Jeu d'énigmes", "Science-fiction"],
+    "gamePlatform": "Navigateur web",
+    "applicationCategory": "Game",
+    "playMode": "SinglePlayer",
+    "numberOfPlayers": { "@type": "QuantitativeValue", "minValue": 1 },
+    "timeRequired": "PT1H30M",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  }
+  </script>
   <script type="module" src="/src/main.js"></script>
 </head>
 <body>
-  <div class="game">
+  <div class="game" id="jeu">
     <header class="game-top">
-      <p class="game-name">LATENCE</p>
+      <h1 class="game-name">LATENCE</h1>
       <div class="game-tools">
         <button type="button" class="tool" id="tSound" aria-pressed="true">Son : oui</button>
         <button type="button" class="tool" id="tReglages" aria-controls="volet" aria-expanded="false">Réglages</button>
       </div>
     </header>
 
-    <section class="rig" aria-label="Le terminal">
+    <main class="rig" aria-label="Le terminal">
       <div class="stage-wrap" id="stageWrap">
         <div class="stage" id="stage">
           <div class="tube" id="tube"></div>
@@ -45,10 +81,18 @@
         <button type="button" class="key key--envoi" data-key="envoi" aria-label="Envoi (Entrée)" aria-keyshortcuts="Enter"><span class="key-nom">Envoi</span><kbd class="key-raccourci" aria-hidden="true">Entrée</kbd></button>
         <button type="button" class="key key--cnx" data-key="connexion" aria-label="Connexion/Fin (Fin)" aria-keyshortcuts="End"><span class="key-nom">Connexion<br>Fin</span><kbd class="key-raccourci" aria-hidden="true">Fin</kbd></button>
       </div>
-    </section>
+    </main>
+
+    <footer class="game-pied">
+      <a href="/mentions-legales.html">Mentions légales et accessibilité</a>
+    </footer>
   </div>
 
-  <div class="intro" id="intro" hidden></div>
+  <noscript>
+    <p class="sans-js">LATENCE se joue sur un terminal recréé en JavaScript : activez JavaScript pour allumer l'écran.</p>
+  </noscript>
+
+  <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Introduction" hidden></div>
 
   <aside class="volet" id="volet" aria-labelledby="voletTitre" tabindex="-1" data-garde-touches>
     <div class="volet-tete">

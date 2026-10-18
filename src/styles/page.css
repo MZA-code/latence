@@ -1,0 +1,42 @@
+/* Pages hors du jeu (mentions légales, page introuvable) : du texte, sobre, sur le fond de l'établi. */
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
+
+body { margin: 0; }
+.page {
+  max-width: 68ch;
+  margin-inline: auto;
+  padding: 32px 16px 56px;
+}
+.page-retour { font: 600 11px/1 var(--mono); letter-spacing: .04em; }
+.page a { color: var(--signal); text-underline-offset: 3px; }
+.page a:hover { color: var(--ink); }
+.page a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.page h1 {
+  margin: 28px 0 8px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(20px, 4vw, 26px);
+  letter-spacing: .06em;
+  line-height: 1.3;
+}
+.page h2 {
+  margin: 36px 0 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font: 600 12px/1.3 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--ink-2);
+}
+.page h3 { margin: 22px 0 6px; font-size: 15px; }
+.page p, .page li { color: var(--ink); max-width: 68ch; }
+.page ul { padding-left: 1.2em; }
+.page li + li { margin-top: 4px; }
+.page address { font-style: normal; }
+.page-maj { color: var(--ink-3); font-size: 13px; }
+
+/* Page introuvable : le message du serveur, à la manière du terminal */
+.page--introuvable { min-height: 100vh; min-height: 100dvh; box-sizing: border-box; display: grid; align-content: center; }
+.page--introuvable h1 { color: var(--signal); font-family: var(--mono); letter-spacing: .1em; }

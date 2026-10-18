@@ -34,23 +34,27 @@ LATENCE est un escape game d'environ 1 h 30, joué entièrement sur un terminal 
 npm install
 npm run dev      # serveur de développement (http://localhost:5173)
 npm test         # tests du décodeur, du moteur de jeu et des énigmes (Vitest)
-npm run build    # build de production dans dist/ (jeu + banc d'essai)
+npm run build    # build de production dans dist/ (jeu, mentions légales, 404 ; sans le banc d'essai)
 npm run preview  # sert dist/ en local
 npm run mosaique -- image.png --colonnes 12 --rangees 5   # silhouette noir et blanc → dessin en pavés
 npm run images   # images du site (photo, écussons) depuis sources/images/ (ffmpeg)
 ```
 
 - `index.html?instantane` affiche les pages sans attendre la ligne à 1200 bauds, et saute l'introduction.
-- `index.html?debug` expose le jeu dans la console sous `window.jeu`.
+- `index.html?debug` expose le jeu dans la console sous `window.jeu`, en développement seulement (`npm run dev`).
 - `index.html?essai` ajoute le rapport d'essai de la partie, pour les séances avec des joueurs (`docs/latence/essais.md`).
-- `banc.html` fait tourner le jeu avec la photo, le calage des coins et les réglages du tube.
+- `banc.html` fait tourner le jeu avec la photo, le calage des coins et les réglages du tube. Il n'est pas mis en ligne.
 
 Lancer `npm test` après toute modification de `src/engine/`, de `src/game/` ou des données du scénario.
 
 ## Architecture
 
 ```
-index.html              page du jeu
+index.html              page du jeu (SEO : description, Open Graph, JSON-LD, sans nom d'auteur)
+mentions-legales.html   mentions légales, données, déclaration d'accessibilité (éditeur anonyme, LCEN 6-III-2)
+404.html                page introuvable
+public/                 .htaccess (o2switch : HTTPS, CSP, cache, robots refusés), robots.txt, sitemap.xml,
+                        manifeste, icônes, image de partage (partage.jpg)
 banc.html               banc d'essai : photo, calage 4 coins, réglages du tube, lecture .vdt
 src/main.js             assemblage de la page du jeu : terminal + Game + scénario + clavier
 src/bench-main.js       assemblage du banc d'essai
@@ -152,6 +156,13 @@ render(g, p) {                                     // p est un Vdt déjà effac�
 - Tout se joue au clavier (`src/ui/keyboard.js`). Un bouton focalisé à la souris ne capture pas Entrée.
 - Sur mobile, un champ invisible (`#sink`) ouvre le clavier du téléphone.
 - Le canvas porte un `aria-label` mis à jour ; `screen.rowText(r)` donne le texte d'une rangée.
+
+## Mise en ligne
+
+- Le site vit à la racine de `https://latence-game.com` (`base: '/'`), servi par Apache chez o2switch : on y dépose le contenu de `dist/`, `.htaccess` compris.
+- La CSP n'admet que `'self'` : aucun script, style ou police d'un autre site, rien d'incrusté en `data:` pour les polices (`assetsInlineLimit: 0`), pas d'attribut `style` posé par `innerHTML`.
+- Un robot à refuser se nomme dans `public/robots.txt` **et** dans `public/.htaccess`.
+- Une nouvelle page publique s'ajoute à `vite.config.js` et à `public/sitemap.xml`.
 
 ## À ne pas faire
 

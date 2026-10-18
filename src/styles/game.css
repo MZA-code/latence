@@ -15,7 +15,7 @@ body { margin: 0; }
   max-width: 1180px;
   margin-inline: auto;
   padding-inline: clamp(16px, 3vw, 32px);
-  padding-block: 16px 24px;
+  padding-block: 16px 10px;
   display: grid;
   align-content: center;
   gap: 14px;
@@ -30,10 +30,17 @@ body { margin: 0; }
 .game-name {
   margin: 0;
   font-family: var(--display);
+  font-weight: 400;
   font-size: clamp(15px, 2vw, 19px);
   letter-spacing: .14em;
   color: var(--ink);
 }
+/* Le pied de page : le seul lien hors du jeu */
+.game-pied { display: flex; justify-content: center; margin-top: -4px; font-size: 12.5px; line-height: 1.2; }
+.game-pied a { color: var(--ink-3); text-underline-offset: 3px; }
+.game-pied a:hover { color: var(--ink-2); }
+.game-pied a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.sans-js { max-width: 46ch; margin: 24px auto; padding-inline: 16px; text-align: center; color: var(--ink); }
 .game-tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .tool {
   appearance: none;
